@@ -38,7 +38,7 @@ export const HeroSection: React.FC = () => {
     <section
       id="hero"
       aria-label="Introduction and Overview"
-      className={`relative min-h-screen pt-28 pb-16 md:pt-36 md:pb-24 flex items-center transition-colors duration-300 overflow-hidden ${
+      className={`relative min-h-screen pt-20 pb-12 md:pt-24 md:pb-16 flex items-center transition-colors duration-300 overflow-hidden ${
         isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#101B2D] text-white'
       }`}
     >
@@ -249,7 +249,7 @@ export const HeroSection: React.FC = () => {
           </motion.div>
 
           {/* Right Column: Borderless Executive Flip Card (Portrait & Chambers Seal) */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end -mt-4 sm:-mt-8 lg:-mt-14 xl:-mt-16 self-start">
+          <div className="lg:col-span-5 flex justify-center lg:justify-end pt-1 sm:pt-2 lg:pt-2 self-start">
             <div className="w-full max-w-md lg:max-w-none">
               <LegalPortrait />
             </div>

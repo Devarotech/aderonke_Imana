@@ -1,41 +1,76 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, RefreshCw, Scale, Landmark, RotateCw, ShieldCheck, Award } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Award, ShieldCheck, Scale, Landmark, Sparkles, Upload, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
-import { PORTFOLIO_DATA } from '../data/portfolioData';
 
 interface LegalPortraitProps {
   className?: string;
 }
 
-const STORAGE_KEY = 'yetunde_aderonke_imana_portrait';
+const STORAGE_KEYS = [
+  'yetunde_aderonke_imana_portrait',
+  'yetunde_aderonke_imana_custom_portrait',
+];
 
 export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) => {
+  // Starts on portrait view mode by default
+  const [viewMode, setViewMode] = useState<'portrait' | 'seal'>('portrait');
   const [photoSrc, setPhotoSrc] = useState<string | null>(null);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isPermanentSaved, setIsPermanentSaved] = useState<boolean>(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const isDay = theme === 'day';
-  const { profile } = PORTFOLIO_DATA;
 
-  // Load saved photo from localStorage or check for public/portrait.png
+  // Check for saved photo in localStorage or static /portrait.png
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setPhotoSrc(saved);
-        return;
-      }
-    } catch {
-      // safe fallback
-    }
-
-    const img = new Image();
-    img.src = '/portrait.png';
-    img.onload = () => {
-      setPhotoSrc('/portrait.png');
+    // 1. Check if public /portrait.png exists and is a valid real image
+    const checkServerPortrait = () => {
+      const img = new Image();
+      img.src = `/portrait.png?t=${Date.now()}`;
+      img.onload = () => {
+        // Only accept if natural width is realistic for a portrait photo (> 100px)
+        if (img.naturalWidth > 100) {
+          setPhotoSrc('/portrait.png');
+          setIsPermanentSaved(true);
+        } else {
+          checkLocalStorage();
+        }
+      };
+      img.onerror = () => {
+        checkLocalStorage();
+      };
     };
+
+    // 2. Check localStorage from previous user session
+    const checkLocalStorage = () => {
+      try {
+        for (const key of STORAGE_KEYS) {
+          const saved = localStorage.getItem(key);
+          if (saved && saved.startsWith('data:image/')) {
+            setPhotoSrc(saved);
+            // Automatically sync to server so it becomes permanently saved to public/portrait.png!
+            fetch('/api/save-portrait', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: saved }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.success) {
+                  setIsPermanentSaved(true);
+                }
+              })
+              .catch(() => {});
+            return;
+          }
+        }
+      } catch {
+        // safe fallback
+      }
+    };
+
+    checkServerPortrait();
   }, []);
 
   const handleFile = (file: File) => {
@@ -45,11 +80,27 @@ export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) 
       const result = e.target?.result as string;
       if (result) {
         setPhotoSrc(result);
-        try {
-          localStorage.setItem(STORAGE_KEY, result);
-        } catch {
-          // safe
+        for (const key of STORAGE_KEYS) {
+          try {
+            localStorage.setItem(key, result);
+          } catch {
+            // ignore
+          }
         }
+
+        // Permanently persist to public/portrait.png on the server
+        fetch('/api/save-portrait', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: result }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              setIsPermanentSaved(true);
+            }
+          })
+          .catch(() => {});
       }
     };
     reader.readAsDataURL(file);
@@ -57,48 +108,37 @@ export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) 
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
+  const toggleView = () => {
+    setViewMode((prev) => (prev === 'portrait' ? 'seal' : 'portrait'));
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
   };
 
-  const triggerUpload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    fileInputRef.current?.click();
-  };
-
-  const resetPhoto = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // safe
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      toggleView();
     }
-    setPhotoSrc(null);
-  };
-
-  const toggleFlip = () => {
-    setIsFlipped((prev) => !prev);
+    setTouchStartX(null);
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
-      className={`relative w-full flex flex-col items-center ${className}`}
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.85, ease: 'easeOut' }}
+      className={`relative w-full max-w-[420px] mx-auto select-none ${className}`}
     >
-      {/* Hidden File Input for Custom Portrait Upload */}
+      {/* Hidden file input for permanent portrait upload */}
       <input
         ref={fileInputRef}
         type="file"
@@ -111,349 +151,220 @@ export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) 
         }}
       />
 
-      {/* Floating Photo Upload / Reset Trigger (Discreet & Frameless) */}
-      <div className="absolute top-2 right-2 z-30 flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
-        <button
-          type="button"
-          onClick={triggerUpload}
-          title="Upload or change official portrait"
-          aria-label="Upload or change portrait photo"
-          className={`p-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-sm ${
-            isDay
-              ? 'bg-white/80 hover:bg-white text-stone-700 hover:text-black border-stone-300'
-              : 'bg-[#101B2D]/80 hover:bg-[#17263D] text-stone-300 hover:text-white border-white/10 hover:border-[#B89A62]'
-          }`}
-        >
-          <Camera className="w-3.5 h-3.5 text-[#B89A62]" />
-        </button>
-
-        {photoSrc && (
-          <button
-            type="button"
-            onClick={resetPhoto}
-            title="Reset to default portrait"
-            aria-label="Reset portrait"
-            className={`p-2 rounded-full border backdrop-blur-md transition-all cursor-pointer shadow-sm ${
-              isDay
-                ? 'bg-white/80 hover:bg-white text-stone-600 hover:text-rose-600 border-stone-300'
-                : 'bg-[#101B2D]/80 hover:bg-[#17263D] text-stone-400 hover:text-rose-400 border-white/10'
-            }`}
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </div>
-
-      {/* 3D Flip Card Container: Frameless & Blended with Hero Section Background */}
+      {/* Arched Architectural Frame matching reference design */}
       <div
-        onClick={toggleFlip}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
         role="button"
         tabIndex={0}
+        aria-label={`Chief State Counsel Yetunde Aderonke Imana ${
+          viewMode === 'portrait' ? 'Official Portrait' : 'Chambers Seal'
+        }. Click or swipe to toggle.`}
+        onClick={toggleView}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            toggleFlip();
+            toggleView();
           }
         }}
-        title="Click to flip between Portrait and Chambers Image"
-        aria-label="Flip between Chief State Counsel Portrait and Chambers Image"
-        className={`relative w-full max-w-sm sm:max-w-md aspect-[3/4] cursor-pointer group select-none transition-transform duration-300 hover:scale-[1.015] ${
-          isDragging ? 'ring-2 ring-[#B89A62] rounded-3xl' : ''
-        }`}
-        style={{ perspective: 1400 }}
-      >
-        {/* Soft Ambient Radial Glow (Seamlessly Blends with Hero) */}
-        <div className={`absolute inset-0 rounded-full blur-3xl pointer-events-none transition-opacity ${
+        onDrop={handleDrop}
+        onDragOver={(e) => e.preventDefault()}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className={`group relative aspect-[3/4.2] w-full rounded-t-[140px] sm:rounded-t-[180px] lg:rounded-t-[220px] rounded-b-3xl overflow-hidden transition-all duration-300 shadow-2xl border cursor-pointer ${
           isDay
-            ? 'bg-gradient-to-tr from-[#B89A62]/10 via-[#EFE9DD]/50 to-transparent opacity-80'
-            : 'bg-gradient-to-tr from-[#B89A62]/08 via-[#1B2A42]/40 to-transparent opacity-75'
-        }`} />
+            ? 'bg-[#F2ECE1] border-[#C9A86A] shadow-[0_25px_60px_rgba(184,154,98,0.2)] hover:border-[#B89A62]'
+            : 'bg-[#0B0F17] border-[#B89A62]/35 shadow-[0_30px_70px_rgba(0,0,0,0.85)] hover:border-[#B89A62]/70 hover:shadow-[0_0_40px_rgba(184,154,98,0.18)]'
+        }`}
+      >
+        {/* Subtle Ambient Backlight Glow behind the Arch */}
+        <div className="absolute inset-0 bg-radial from-[#B89A62]/12 via-transparent to-transparent pointer-events-none" />
 
-        {/* 3D Rotating Inner Card */}
-        <motion.div
-          className="relative w-full h-full"
-          style={{ transformStyle: 'preserve-3d' }}
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ duration: 0.75, ease: [0.23, 1, 0.32, 1] }}
-        >
-          {/* ==================== FRONT FACE: THE PORTRAIT ==================== */}
-          <div
-            className="absolute inset-0 w-full h-full flex flex-col justify-end overflow-hidden rounded-2xl bg-transparent"
-            style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
-          >
-            {photoSrc ? (
-              <div className="relative w-full h-full">
+        {/* Content Toggle: Courtroom Portrait vs Official Chambers Seal */}
+        <AnimatePresence mode="wait">
+          {viewMode === 'portrait' ? (
+            <motion.div
+              key="portrait"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="relative w-full h-full flex flex-col justify-end overflow-hidden"
+            >
+              {photoSrc ? (
+                /* The Official Courtroom Photograph */
                 <img
                   src={photoSrc}
-                  alt="Chief State Counsel Yetunde Aderonke Imana"
+                  alt="Chief State Counsel Yetunde Aderonke Imana in formal courtroom barrister wig and gown"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover object-top filter contrast-[1.02]"
+                  className="absolute inset-0 w-full h-full object-cover object-top filter contrast-[1.03]"
                   loading="eager"
                 />
-                {/* Seamless Edge Blending Vignette Gradients */}
-                <div className={`absolute inset-0 pointer-events-none ${
-                  isDay
-                    ? 'bg-gradient-to-t from-[#FAF8F5] via-[#FAF8F5]/30 to-transparent'
-                    : 'bg-gradient-to-t from-[#101B2D] via-[#101B2D]/35 to-transparent'
-                }`} />
-                <div className={`absolute inset-0 pointer-events-none ${
-                  isDay
-                    ? 'bg-[radial-gradient(ellipse_at_center,transparent_45%,#FAF8F5_100%)] opacity-70'
-                    : 'bg-[radial-gradient(ellipse_at_center,transparent_45%,#101B2D_100%)] opacity-75'
-                }`} />
+              ) : (
+                /* Fallback Courtroom Portrait Frame with One-Click Upload Trigger */
+                <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-[#1A1410] via-[#100D0A] to-[#0A0705]">
+                  <div className="absolute inset-0 opacity-40 bg-gradient-to-r from-[#2B1B12] via-[#1F140D] to-[#2B1B12]" />
+                  
+                  <div className="relative z-10 space-y-4 max-w-xs">
+                    <div className="w-20 h-20 mx-auto rounded-full bg-[#B89A62]/20 border border-[#B89A62]/40 flex items-center justify-center shadow-lg">
+                      <Scale className="w-10 h-10 text-[#D8BD8A]" />
+                    </div>
+                    <div>
+                      <h4 className="font-serif text-lg font-bold text-white">
+                        Yetunde Aderonke Imana
+                      </h4>
+                      <p className="text-xs text-[#D8BD8A] mt-1 font-medium">
+                        Chief State Counsel • Prosecutor
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#B89A62] hover:bg-[#C9A86A] text-[#101B2D] text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                    >
+                      <Upload className="w-4 h-4" />
+                      <span>Select Photo to Embed</span>
+                    </button>
+                    <p className="text-[11px] text-stone-400">
+                      Drop &apos;Confident Barrister in Courtroom Attire.png&apos; anywhere here
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Executive Lower Nameplate beneath the profile picture */}
+              <div className="relative z-20 px-5 pt-8 pb-5 text-left bg-gradient-to-t from-black/95 via-black/85 to-transparent">
+                <span className="inline-block px-2.5 py-0.5 rounded bg-[#B89A62] text-[#101B2D] text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-1.5 shadow-sm">
+                  CHIEF STATE COUNSEL
+                </span>
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white tracking-wide">
+                  Yetunde Aderonke Imana
+                </h3>
+                <p className="text-xs text-stone-300 mt-1 font-light">
+                  Complex Casework Group • Chambers of the HAGF
+                </p>
+                <p className="text-[11px] text-[#D8BD8A] mt-0.5 font-medium">
+                  Federal Ministry of Justice • Abuja, Nigeria
+                </p>
               </div>
-            ) : (
-              /* High-Fidelity Executive Barrister Portrait Art blending directly into background */
-              <div className="relative w-full h-full flex flex-col items-center justify-end">
-                <svg
-                  viewBox="0 0 200 270"
-                  className="w-full h-full object-contain filter drop-shadow(0 15px 30px rgba(0,0,0,0.3))"
-                >
-                  <defs>
-                    <linearGradient id="framelessSkin" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8A4A28" />
-                      <stop offset="50%" stopColor="#6E381C" />
-                      <stop offset="100%" stopColor="#532611" />
-                    </linearGradient>
-                    <linearGradient id="framelessWig" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#FFFFFF" />
-                      <stop offset="35%" stopColor="#F5F0E4" />
-                      <stop offset="70%" stopColor="#DFD5C2" />
-                      <stop offset="100%" stopColor="#B3A58E" />
-                    </linearGradient>
-                    <linearGradient id="framelessGown" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#252F3E" />
-                      <stop offset="60%" stopColor="#121822" />
-                      <stop offset="100%" stopColor="#0B0F15" />
-                    </linearGradient>
-                    <linearGradient id="goldFillet" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#E6D3AB" />
-                      <stop offset="50%" stopColor="#B89A62" />
-                      <stop offset="100%" stopColor="#8A6D3B" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Soft Radiant Halo */}
-                  <circle cx="100" cy="115" r="75" fill="url(#goldFillet)" opacity={isDay ? "0.08" : "0.12"} />
-
-                  {/* Barrister Wig Back Full Volume */}
-                  <ellipse cx="100" cy="98" rx="55" ry="54" fill="url(#framelessWig)" />
-
-                  {/* Wig Tiered Lateral Curls */}
-                  <g fill="#D6CBB8" stroke="#FFFFFF" strokeWidth="0.8">
-                    <circle cx="56" cy="100" r="13" />
-                    <circle cx="54" cy="120" r="12" />
-                    <circle cx="58" cy="138" r="11" />
-                    <circle cx="144" cy="100" r="13" />
-                    <circle cx="146" cy="120" r="12" />
-                    <circle cx="142" cy="138" r="11" />
-                  </g>
-
-                  {/* Neck & Graceful Poise */}
-                  <path d="M 88,140 L 88,172 Q 100,178 112,172 L 112,140 Z" fill="#6E381C" />
-
-                  {/* Oval Face Contour */}
-                  <ellipse cx="100" cy="116" rx="30" ry="34" fill="url(#framelessSkin)" />
-
-                  {/* Top Wig Arch & Structured Rows */}
-                  <path d="M 66,95 Q 100,58 134,95 Q 100,82 66,95 Z" fill="url(#framelessWig)" />
-                  <path d="M 72,86 Q 100,68 128,86" stroke="#FFFFFF" strokeWidth="2.5" fill="none" opacity="0.9" />
-                  <path d="M 77,76 Q 100,62 123,76" stroke="#DFD5C2" strokeWidth="2" fill="none" opacity="0.8" />
-
-                  {/* Serene Forehead Line */}
-                  <path d="M 74,96 Q 100,88 126,96" stroke="#48200C" strokeWidth="2" fill="none" />
-
-                  {/* Sculpted Arched Eyebrows */}
-                  <path d="M 77,100 Q 86,93 94,98" stroke="#1C0D05" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-                  <path d="M 106,98 Q 114,93 123,100" stroke="#1C0D05" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-
-                  {/* Expressive Warm Eyes */}
-                  <ellipse cx="86" cy="104" rx="5" ry="3" fill="#1C0D05" />
-                  <ellipse cx="114" cy="104" rx="5" ry="3" fill="#1C0D05" />
-                  <circle cx="87" cy="103" r="1.3" fill="#FFFFFF" />
-                  <circle cx="115" cy="103" r="1.3" fill="#FFFFFF" />
-
-                  {/* Nose & High Cheek Glow */}
-                  <path d="M 100,103 L 98,121 Q 100,124 103,121" stroke="#4D220B" strokeWidth="2" fill="none" />
-                  <ellipse cx="80" cy="120" rx="6" ry="3" fill="#A85732" opacity="0.3" />
-                  <ellipse cx="120" cy="120" rx="6" ry="3" fill="#A85732" opacity="0.3" />
-
-                  {/* Poised Elegant Smile */}
-                  <path d="M 91,135 Q 100,132 109,135 Q 100,144 91,135 Z" fill="#914354" />
-
-                  {/* Barrister Court Gown with Deep Folds */}
-                  <path d="M 22,176 Q 60,154 100,158 Q 140,154 178,176 L 196,270 L 4,270 Z" fill="url(#framelessGown)" />
-
-                  {/* Stiff Wing Collar */}
-                  <polygon points="72,160 100,188 82,196 68,170" fill="#F8F6F0" />
-                  <polygon points="128,160 100,188 118,196 132,170" fill="#FFFFFF" />
-
-                  {/* Dual Hanging Barrister Bands */}
-                  <rect x="88" y="186" width="10.5" height="46" fill="#FFFFFF" rx="1.5" />
-                  <rect x="101.5" y="186" width="10.5" height="46" fill="#F4EFE6" rx="1.5" />
-                </svg>
-
-                {/* Seamless Edge Blending Vignette Gradients */}
-                <div className={`absolute inset-0 pointer-events-none ${
-                  isDay
-                    ? 'bg-gradient-to-t from-[#FAF8F5] via-[#FAF8F5]/25 to-transparent'
-                    : 'bg-gradient-to-t from-[#101B2D] via-[#101B2D]/35 to-transparent'
-                }`} />
-              </div>
-            )}
-
-            {/* Seamless Bottom Name Overlay */}
-            <div className="relative p-5 text-center z-10 pointer-events-none">
-              <span className={`inline-block text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-1 ${
+            </motion.div>
+          ) : (
+            /* Chambers Seal inside matching Arched Frame */
+            <motion.div
+              key="seal"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className={`relative w-full h-full p-6 sm:p-8 flex flex-col items-center justify-between text-center overflow-hidden ${
                 isDay
-                  ? 'bg-[#EFE9DD]/90 text-[#96773E] shadow-sm'
-                  : 'bg-[#17263D]/90 text-[#D8BD8A] shadow-sm'
-              }`}>
-                CHIEF STATE COUNSEL
-              </span>
-              <h3 className={`font-serif text-2xl font-bold tracking-wide ${
-                isDay ? 'text-[#101B2D]' : 'text-white'
-              }`}>
-                {profile.fullName}
-              </h3>
-              <p className={`text-xs mt-0.5 ${isDay ? 'text-[#556377]' : 'text-stone-300'}`}>
-                Chambers of the HAGF • Federal Ministry of Justice
-              </p>
-            </div>
-          </div>
-
-          {/* ==================== BACK FACE: THE CHAMBERS SEAL ==================== */}
-          <div
-            className="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-6 text-center rounded-2xl bg-transparent"
-            style={{
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              transform: 'rotateY(180deg)',
-            }}
-          >
-            {/* Seamless Edge Blending Vignette Gradients */}
-            <div className={`absolute inset-0 pointer-events-none ${
-              isDay
-                ? 'bg-gradient-to-t from-[#FAF8F5] via-transparent to-[#FAF8F5]'
-                : 'bg-gradient-to-t from-[#101B2D] via-transparent to-[#101B2D]'
-            }`} />
-
-            {/* Top Federal Eyebrow */}
-            <div className="relative z-10 flex items-center gap-2 mb-4">
-              <Landmark className="w-4 h-4 text-[#B89A62]" />
-              <span className={`text-[11px] font-bold tracking-widest uppercase ${
-                isDay ? 'text-[#96773E]' : 'text-[#D8BD8A]'
-              }`}>
-                Chambers of the HAGF
-              </span>
-            </div>
-
-            {/* Embossed Gold Chambers Seal */}
-            <div className="relative z-10 my-2 flex items-center justify-center">
-              <div className={`w-44 h-44 sm:w-52 sm:h-52 rounded-full p-2 flex items-center justify-center relative shadow-2xl ${
-                isDay
-                  ? 'bg-gradient-to-tr from-[#EBE2D0] via-white to-[#E3D7C1]'
-                  : 'bg-gradient-to-tr from-[#1B2A42] via-[#0E1726] to-[#25395A]'
-              }`}>
-                <svg viewBox="0 0 160 160" className="w-full h-full">
-                  <defs>
-                    <linearGradient id="chambersGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#DFCEAA" />
-                      <stop offset="50%" stopColor="#B89A62" />
-                      <stop offset="100%" stopColor="#8A6D3B" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Concentric Crest Borders */}
-                  <circle cx="80" cy="80" r="76" fill="none" stroke="url(#chambersGold)" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
-                  <circle cx="80" cy="80" r="70" fill="none" stroke="url(#chambersGold)" strokeWidth="2.5" />
-                  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#chambersGold)" strokeWidth="1" opacity="0.4" />
-
-                  {/* Scales of Justice in Burnished Gold */}
-                  <g transform="translate(80, 78) scale(0.72) translate(-50, -50)">
-                    <rect x="47" y="14" width="6" height="74" fill="url(#chambersGold)" rx="2" />
-                    <circle cx="50" cy="14" r="5" fill="url(#chambersGold)" />
-                    <path d="M 16,28 L 84,28" stroke="url(#chambersGold)" strokeWidth="4.5" strokeLinecap="round" />
-                    <circle cx="50" cy="28" r="4.5" fill="#FFFFFF" stroke="url(#chambersGold)" strokeWidth="2" />
-                    <line x1="20" y1="28" x2="10" y2="56" stroke="url(#chambersGold)" strokeWidth="1.8" />
-                    <line x1="20" y1="28" x2="30" y2="56" stroke="url(#chambersGold)" strokeWidth="1.8" />
-                    <path d="M 6,56 Q 20,68 34,56 Z" fill="url(#chambersGold)" />
-                    <line x1="80" y1="28" x2="70" y2="56" stroke="url(#chambersGold)" strokeWidth="1.8" />
-                    <line x1="80" y1="28" x2="90" y2="56" stroke="url(#chambersGold)" strokeWidth="1.8" />
-                    <path d="M 66,56 Q 80,68 94,56 Z" fill="url(#chambersGold)" />
-                    <ellipse cx="50" cy="88" rx="28" ry="6" fill="url(#chambersGold)" />
-                    <rect x="30" y="86" width="40" height="4" fill="url(#chambersGold)" rx="1.5" />
-                  </g>
-
-                  {/* Flanking Laurel Elements */}
-                  <path d="M 30,110 Q 50,132 80,132 Q 110,132 130,110" fill="none" stroke="url(#chambersGold)" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+                  ? 'bg-gradient-to-b from-[#F7F2E8] via-[#EFE7D8] to-[#E5DAC6] text-[#101B2D]'
+                  : 'bg-gradient-to-b from-[#101826] via-[#0B1019] to-[#070A10] text-white'
+              }`}
+            >
+              {/* Top Institutional Header */}
+              <div className="pt-8 flex items-center gap-2">
+                <Landmark className="w-4 h-4 text-[#B89A62]" />
+                <span className={`text-[11px] font-semibold tracking-widest uppercase ${
+                  isDay ? 'text-[#96773E]' : 'text-[#D8BD8A]'
+                }`}>
+                  Federal Republic of Nigeria
+                </span>
               </div>
-            </div>
 
-            {/* Inscriptions on Chambers Seal */}
-            <div className="relative z-10 space-y-1.5 max-w-xs mt-3">
-              <span className={`inline-block text-[10px] font-bold tracking-widest uppercase px-3 py-0.5 rounded-full ${
-                isDay ? 'bg-[#EFE9DD] text-[#96773E]' : 'bg-[#17263D] text-[#D8BD8A]'
-              }`}>
-                FEDERAL REPUBLIC OF NIGERIA
-              </span>
-              <h4 className={`font-serif text-xl sm:text-2xl font-bold ${
-                isDay ? 'text-[#101B2D]' : 'text-white'
-              }`}>
-                Chief State Counsel
-              </h4>
-              <p className={`text-xs font-semibold text-[#B89A62]`}>
-                Complex Casework Group
-              </p>
-              <p className={`text-[11px] leading-relaxed ${isDay ? 'text-[#556377]' : 'text-stone-300'}`}>
-                Federal Ministry of Justice • Abuja, Nigeria
-              </p>
-            </div>
+              {/* Embossed Concentric Judicial Seal */}
+              <div className="my-auto flex items-center justify-center">
+                <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full p-2.5 flex items-center justify-center relative shadow-2xl ${
+                  isDay
+                    ? 'bg-gradient-to-tr from-[#EBE2D0] via-white to-[#E3D7C1] border-2 border-[#B89A62]'
+                    : 'bg-gradient-to-tr from-[#1B2A42] via-[#0E1726] to-[#25395A] border-2 border-[#B89A62]/60'
+                }`}>
+                  <svg viewBox="0 0 160 160" className="w-full h-full">
+                    <defs>
+                      <linearGradient id="sealGoldArchFinal" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#DFCEAA" />
+                        <stop offset="50%" stopColor="#B89A62" />
+                        <stop offset="100%" stopColor="#8A6D3B" />
+                      </linearGradient>
+                    </defs>
 
-            {/* Badges on back */}
-            <div className="relative z-10 mt-4 flex items-center justify-center gap-3">
-              <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-semibold px-2.5 py-1 rounded-full ${
-                isDay ? 'bg-[#EFE9DD] text-[#96773E]' : 'bg-[#17263D] text-[#D8BD8A]'
-              }`}>
-                <ShieldCheck className="w-3 h-3" />
-                Prosecution
-              </span>
-              <span className={`inline-flex items-center gap-1 text-[10px] uppercase font-semibold px-2.5 py-1 rounded-full ${
-                isDay ? 'bg-[#EFE9DD] text-[#96773E]' : 'bg-[#17263D] text-[#D8BD8A]'
-              }`}>
-                <Award className="w-3 h-3" />
-                Litigation
-              </span>
-            </div>
-          </div>
-        </motion.div>
+                    {/* Concentric Rings */}
+                    <circle cx="80" cy="80" r="76" fill="none" stroke="url(#sealGoldArchFinal)" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
+                    <circle cx="80" cy="80" r="70" fill="none" stroke="url(#sealGoldArchFinal)" strokeWidth="2" />
+                    <circle cx="80" cy="80" r="54" fill="none" stroke="url(#sealGoldArchFinal)" strokeWidth="1" opacity="0.4" />
+
+                    {/* Scales of Justice */}
+                    <g transform="translate(80, 78) scale(0.68) translate(-50, -50)">
+                      <rect x="47" y="14" width="6" height="74" fill="url(#sealGoldArchFinal)" rx="2" />
+                      <circle cx="50" cy="14" r="5" fill="url(#sealGoldArchFinal)" />
+                      <path d="M 16,28 L 84,28" stroke="url(#sealGoldArchFinal)" strokeWidth="4.5" strokeLinecap="round" />
+                      <circle cx="50" cy="28" r="4.5" fill="#FFFFFF" stroke="url(#sealGoldArchFinal)" strokeWidth="2" />
+                      <line x1="20" y1="28" x2="10" y2="56" stroke="url(#sealGoldArchFinal)" strokeWidth="1.8" />
+                      <line x1="20" y1="28" x2="30" y2="56" stroke="url(#sealGoldArchFinal)" strokeWidth="1.8" />
+                      <path d="M 6,56 Q 20,68 34,56 Z" fill="url(#sealGoldArchFinal)" />
+                      <line x1="80" y1="28" x2="70" y2="56" stroke="url(#sealGoldArchFinal)" strokeWidth="1.8" />
+                      <line x1="80" y1="28" x2="90" y2="56" stroke="url(#sealGoldArchFinal)" strokeWidth="1.8" />
+                      <path d="M 66,56 Q 80,68 94,56 Z" fill="url(#sealGoldArchFinal)" />
+                      <ellipse cx="50" cy="88" rx="28" ry="6" fill="url(#sealGoldArchFinal)" />
+                      <rect x="30" y="86" width="40" height="4" fill="url(#sealGoldArchFinal)" rx="1.5" />
+                    </g>
+                    <path d="M 30,110 Q 50,132 80,132 Q 110,132 130,110" fill="none" stroke="url(#sealGoldArchFinal)" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Chambers Designation */}
+              <div className="space-y-1.5 w-full max-w-xs pb-4">
+                <span className={`inline-block text-[10px] font-bold tracking-widest uppercase px-2.5 py-0.5 rounded border ${
+                  isDay
+                    ? 'bg-[#EFE9DD] border-[#B89A62]/40 text-[#96773E]'
+                    : 'bg-[#1A283F] border-[#B89A62]/40 text-[#D8BD8A]'
+                }`}>
+                  CHIEF STATE COUNSEL
+                </span>
+                <h3 className={`font-serif text-xl sm:text-2xl font-bold tracking-tight ${
+                  isDay ? 'text-[#101B2D]' : 'text-white'
+                }`}>
+                  Yetunde Aderonke Imana
+                </h3>
+                <p className={`text-xs ${isDay ? 'text-[#556377]' : 'text-stone-300'}`}>
+                  Chambers of the HAGF • Complex Casework Group
+                </p>
+                <p className="text-[11px] text-[#B89A62]">
+                  Federal Ministry of Justice • Abuja
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Interactive Frameless Flip Prompt */}
-      <div
-        onClick={toggleFlip}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleFlip();
-          }
-        }}
-        className={`mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full cursor-pointer transition-all duration-200 select-none ${
-          isDay
-            ? 'text-[#96773E] hover:text-[#101B2D] hover:bg-[#EFE9DD]/60'
-            : 'text-[#D8BD8A] hover:text-white hover:bg-white/5'
-        }`}
-      >
-        <RotateCw className="w-3.5 h-3.5 transition-transform duration-500 group-hover:rotate-180" />
-        <span className="text-xs font-medium tracking-wide">
-          Click image to flip to {isFlipped ? 'Official Portrait' : 'Chambers Image'}
-        </span>
+      {/* Interactive Toggle Control placed gracefully UNDER her frame */}
+      <div className="mt-3.5 flex items-center justify-center">
+        <button
+          type="button"
+          onClick={toggleView}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-semibold tracking-wide transition-all shadow-md cursor-pointer ${
+            isDay
+              ? 'bg-white hover:bg-[#F4EFE6] text-[#101B2D] border-[#C9A86A]/50 hover:border-[#B89A62]'
+              : 'bg-[#152033] hover:bg-[#1E2E4A] text-[#D8BD8A] border-[#B89A62]/40 hover:border-[#B89A62]'
+          }`}
+        >
+          {viewMode === 'portrait' ? (
+            <>
+              <Scale className="w-3.5 h-3.5 text-[#B89A62]" />
+              <span>Click or swipe for Official Chambers Seal</span>
+              <span className="text-xs font-bold">⇄</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-3.5 h-3.5 text-[#B89A62]" />
+              <span>Click or swipe for Official Courtroom Portrait</span>
+              <span className="text-xs font-bold">⇄</span>
+            </>
+          )}
+        </button>
       </div>
     </motion.div>
   );
