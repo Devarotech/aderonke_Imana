@@ -9,6 +9,7 @@ import { SkipToContent } from './components/SkipToContent';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { AboutSection } from './components/AboutSection';
+import { LegalFocusSection } from './components/LegalFocusSection';
 import { ExpertiseSection } from './components/ExpertiseSection';
 import { ExperienceSection } from './components/ExperienceSection';
 import { RecognitionSection } from './components/RecognitionSection';
@@ -34,6 +35,7 @@ function AppContent() {
       <main id="main-content" className="flex-grow">
         <HeroSection />
         <AboutSection />
+        <LegalFocusSection />
         <ExpertiseSection />
         <ExperienceSection />
         <RecognitionSection />

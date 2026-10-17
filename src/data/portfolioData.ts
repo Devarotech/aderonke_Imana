@@ -51,6 +51,7 @@ export const PORTFOLIO_DATA = {
   navigation: [
     { label: "Home", href: "#hero" },
     { label: "About", href: "#about" },
+    { label: "Legal Focus", href: "#legal-focus" },
     { label: "Expertise", href: "#expertise" },
     { label: "Experience", href: "#experience" },
     { label: "Contributions", href: "#contributions" },
