@@ -251,7 +251,7 @@ export const LegalFocusSection: React.FC = () => {
       id="legal-focus"
       aria-label="Legal Focus and Specialized Expertise"
       className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#FCFAF7] text-[#101B2D]' : 'bg-[#0E1726] text-white'
+        isDay ? 'bg-[#FCFAF7] text-[#101B2D]' : 'bg-[#110E10] text-white'
       }`}
     >
       {/* Subtle Background Glow */}
@@ -296,11 +296,11 @@ export const LegalFocusSection: React.FC = () => {
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider transition-all cursor-pointer ${
                   selectedCategory === cat.id
                     ? isDay
-                      ? 'bg-[#101B2D] text-white shadow-sm'
+                      ? 'bg-[#141113] text-white shadow-sm'
                       : 'bg-[#B89A62] text-[#101B2D] shadow-sm font-bold'
                     : isDay
                       ? 'bg-[#EFE9DD] text-[#556377] hover:text-[#101B2D]'
-                      : 'bg-[#17253D] text-stone-300 hover:text-white hover:bg-[#1E304C]'
+                      : 'bg-[#17253D] text-stone-300 hover:text-white hover:bg-[#2A2427]'
                 }`}
               >
                 {cat.label}
@@ -319,7 +319,7 @@ export const LegalFocusSection: React.FC = () => {
               className={`w-full pl-9 pr-4 py-1.5 text-xs rounded-full border outline-none transition-colors ${
                 isDay
                   ? 'bg-white border-[#D1BE98] text-[#101B2D] placeholder-stone-400 focus:border-[#B89A62]'
-                  : 'bg-[#152238] border-white/10 text-white placeholder-stone-400 focus:border-[#B89A62]'
+                  : 'bg-[#221D20] border-white/10 text-white placeholder-stone-400 focus:border-[#B89A62]'
               }`}
             />
           </div>
@@ -339,7 +339,7 @@ export const LegalFocusSection: React.FC = () => {
               className={`group relative rounded-xl p-6 sm:p-7 border transition-all duration-300 flex flex-col justify-between cursor-pointer ${
                 isDay
                   ? 'bg-white border-[#E2D5BE] hover:border-[#B89A62] shadow-sm hover:shadow-xl hover:-translate-y-1'
-                  : 'bg-[#131F33] border-white/10 hover:border-[#B89A62]/60 shadow-lg hover:shadow-2xl hover:shadow-[#B89A62]/10 hover:-translate-y-1'
+                  : 'bg-[#1D191B] border-white/10 hover:border-[#B89A62]/60 shadow-lg hover:shadow-2xl hover:shadow-[#B89A62]/10 hover:-translate-y-1'
               }`}
             >
               <div>
@@ -348,14 +348,14 @@ export const LegalFocusSection: React.FC = () => {
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center border transition-colors ${
                     isDay
                       ? 'bg-[#F5F0E6] border-[#E2D5BE] group-hover:bg-[#EFE9DD]'
-                      : 'bg-[#1A2A44] border-white/10 group-hover:border-[#B89A62]/40'
+                      : 'bg-[#252023] border-white/10 group-hover:border-[#B89A62]/40'
                   }`}>
                     {renderIcon(item.icon)}
                   </div>
                   <span className={`text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded border ${
                     isDay
                       ? 'bg-[#F2ECE1] border-[#C9A86A]/40 text-[#96773E]'
-                      : 'bg-[#1B2A42] border-[#B89A62]/30 text-[#D8BD8A]'
+                      : 'bg-[#252023] border-[#B89A62]/30 text-[#D8BD8A]'
                   }`}>
                     {item.categoryLabel}
                   </span>
@@ -446,7 +446,7 @@ export const LegalFocusSection: React.FC = () => {
               className={`relative w-full max-w-2xl rounded-2xl p-6 sm:p-8 shadow-2xl border z-10 max-h-[90vh] overflow-y-auto ${
                 isDay
                   ? 'bg-[#FAF8F5] border-[#C9A86A] text-[#101B2D]'
-                  : 'bg-[#101A2C] border-[#B89A62]/40 text-white'
+                  : 'bg-[#161315] border-[#B89A62]/40 text-white'
               }`}
             >
               {/* Close Button */}
@@ -524,7 +524,7 @@ export const LegalFocusSection: React.FC = () => {
 
               {/* Statutory Framework & Authorities */}
               <div className={`p-4 rounded-xl border ${
-                isDay ? 'bg-[#F2ECE1] border-[#E2D5BE]' : 'bg-[#152238] border-white/10'
+                isDay ? 'bg-[#F2ECE1] border-[#E2D5BE]' : 'bg-[#221D20] border-white/10'
               }`}>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#B89A62] mb-2 flex items-center gap-2">
                   <FileText className="w-4 h-4" />

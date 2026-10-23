@@ -31,7 +31,7 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({ is
         className={`relative w-full max-w-4xl rounded-sm shadow-2xl border my-8 transition-colors ${
           isDay
             ? 'bg-[#FAF8F5] text-[#101B2D] border-[#B89A62]/40'
-            : 'bg-[#101B2D] text-stone-100 border-[#B89A62]/40'
+            : 'bg-[#141113] text-stone-100 border-[#B89A62]/40'
         }`}
       >
         {/* Top Action Bar (hidden when printing) */}
@@ -65,7 +65,7 @@ export const ExecutiveDossierModal: React.FC<ExecutiveDossierModalProps> = ({ is
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
                 isDay
                   ? 'bg-white border-stone-300 text-[#101B2D] hover:bg-stone-100'
-                  : 'bg-[#17263D] border-white/10 text-stone-200 hover:border-[#B89A62]'
+                  : 'bg-[#1D191B] border-white/10 text-stone-200 hover:border-[#B89A62]'
               }`}
             >
               <Download className="w-3.5 h-3.5 text-[#B89A62]" />

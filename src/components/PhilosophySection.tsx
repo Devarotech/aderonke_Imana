@@ -14,7 +14,7 @@ export const PhilosophySection: React.FC = () => {
       id="philosophy"
       aria-label="Professional Philosophy"
       className={`py-24 md:py-32 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#F5F0E6] text-[#101B2D]' : 'bg-[#101B2D] text-white'
+        isDay ? 'bg-[#F5F0E6] text-[#101B2D]' : 'bg-[#141113] text-white'
       }`}
     >
       {/* Subtle Background Watermark */}

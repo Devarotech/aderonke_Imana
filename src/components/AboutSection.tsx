@@ -17,7 +17,7 @@ export const AboutSection: React.FC = () => {
       id="about"
       aria-label="About Yetunde Aderonke Imana"
       className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#101B2D] text-white'
+        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#141113] text-white'
       }`}
     >
       {/* Decorative architectural grid background */}
@@ -92,7 +92,7 @@ export const AboutSection: React.FC = () => {
             <div className={`mt-8 p-6 sm:p-7 rounded-sm shadow-sm border ${
               isDay
                 ? 'bg-white border-[#E5DFD3] text-[#101B2D]'
-                : 'bg-[#17263D] border-[#B89A62]/30 text-white'
+                : 'bg-[#1D191B] border-[#B89A62]/30 text-white'
             }`}>
               <blockquote className={`font-serif text-lg md:text-xl italic leading-relaxed ${
                 isDay ? 'text-[#101B2D]' : 'text-[#F4EFE6]'
@@ -120,7 +120,7 @@ export const AboutSection: React.FC = () => {
             <div className={`p-7 rounded-sm shadow-xl border-t-4 border-[#B89A62] ${
               isDay
                 ? 'bg-white border border-[#E5DFD3] text-[#101B2D]'
-                : 'bg-[#17263D] border border-white/10 text-white'
+                : 'bg-[#1D191B] border border-white/10 text-white'
             }`}>
               <span className={`text-[11px] uppercase tracking-widest font-semibold block mb-2 ${
                 isDay ? 'text-[#96773E]' : 'text-[#D8BD8A]'
@@ -199,7 +199,7 @@ export const AboutSection: React.FC = () => {
                     className={`inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-full border text-[11px] font-semibold uppercase tracking-wider transition-all cursor-pointer shadow-sm ${
                       isDay
                         ? 'bg-white hover:bg-[#F2ECE1] text-[#101B2D] border-stone-300 hover:border-[#B89A62]'
-                        : 'bg-[#101B2D] hover:bg-[#1f3250] text-stone-200 hover:text-white border-white/10 hover:border-[#B89A62]'
+                        : 'bg-[#141113] hover:bg-[#2A2427] text-stone-200 hover:text-white border-white/10 hover:border-[#B89A62]'
                     }`}
                   >
                     <FileText className="w-3 h-3 text-[#B89A62]" />
@@ -226,7 +226,7 @@ export const AboutSection: React.FC = () => {
             <div className={`p-6 rounded-sm space-y-4 border shadow-sm ${
               isDay
                 ? 'bg-white border-[#E5DFD3] text-[#101B2D]'
-                : 'bg-[#17263D] border-white/10 text-white'
+                : 'bg-[#1D191B] border-white/10 text-white'
             }`}>
               <div className="flex items-center gap-2">
                 <Scale className="w-3.5 h-3.5 text-[#B89A62]" />

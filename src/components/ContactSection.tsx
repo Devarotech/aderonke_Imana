@@ -100,7 +100,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
       id="contact"
       aria-label="Professional Enquiries and Contact Information"
       className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#17263D] text-white'
+        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#1D191B] text-white'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,7 +143,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
             <div className={`p-7 sm:p-8 rounded-sm border shadow-xl ${
               isDay
                 ? 'bg-white border-[#E5DFD3] text-[#101B2D]'
-                : 'bg-[#101B2D] border-[#B89A62]/40 text-white'
+                : 'bg-[#141113] border-[#B89A62]/40 text-white'
             }`}>
               <span className="text-xs font-semibold uppercase tracking-wider text-[#B89A62] block mb-2">
                 Official Prosecutorial Correspondence
@@ -215,7 +215,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                   className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-sm border text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
                     isDay
                       ? 'bg-[#F2ECE1] border-stone-300 text-[#101B2D] hover:bg-[#EAE2D3]'
-                      : 'bg-[#17263D] border-white/10 text-stone-200 hover:border-[#B89A62]'
+                      : 'bg-[#1D191B] border-white/10 text-stone-200 hover:border-[#B89A62]'
                   }`}
                 >
                   {copied ? (
@@ -237,7 +237,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                   className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer shadow-sm ${
                     isDay
                       ? 'bg-white border-stone-300 text-[#101B2D] hover:border-[#B89A62] hover:bg-[#F2ECE1]'
-                      : 'bg-[#17263D] border-white/10 text-stone-200 hover:border-[#B89A62] hover:text-white'
+                      : 'bg-[#1D191B] border-white/10 text-stone-200 hover:border-[#B89A62] hover:text-white'
                   }`}
                 >
                   <Download className="w-3.5 h-3.5 text-[#B89A62]" />
@@ -261,7 +261,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
 
             {/* Social Media Channels Box with Logos Only */}
             <div className={`p-6 rounded-sm border shadow-md ${
-              isDay ? 'bg-white border-[#E5DFD3]' : 'bg-[#101B2D] border-white/10'
+              isDay ? 'bg-white border-[#E5DFD3]' : 'bg-[#141113] border-white/10'
             }`}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-serif text-lg font-bold">Official Social Channels</h3>
@@ -313,7 +313,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
             className={`lg:col-span-7 p-8 sm:p-10 rounded-sm border shadow-2xl relative ${
               isDay
                 ? 'bg-white border-[#E5DFD3] text-[#101B2D]'
-                : 'bg-[#101B2D] border-[#B89A62]/40 text-white'
+                : 'bg-[#141113] border-[#B89A62]/40 text-white'
             }`}
           >
             <div className="mb-6">
@@ -330,7 +330,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
 
             {submitted ? (
               <div className={`p-6 rounded-sm border text-center space-y-4 ${
-                isDay ? 'bg-[#F2ECE1] border-[#B89A62]' : 'bg-[#17263D] border-[#B89A62]'
+                isDay ? 'bg-[#F2ECE1] border-[#B89A62]' : 'bg-[#1D191B] border-[#B89A62]'
               }`}>
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-7 h-7" />
@@ -390,7 +390,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                         className={`w-full pl-9 pr-3 py-2.5 text-sm rounded-sm border focus:outline-none focus:ring-1 focus:ring-[#B89A62] transition-colors ${
                           isDay
                             ? 'bg-[#FAF8F5] border-stone-300 text-[#101B2D]'
-                            : 'bg-[#17263D] border-white/10 text-white placeholder:text-stone-500'
+                            : 'bg-[#1D191B] border-white/10 text-white placeholder:text-stone-500'
                         } ${formErrors.name ? 'border-red-500' : ''}`}
                       />
                     </div>
@@ -415,7 +415,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                         className={`w-full pl-9 pr-3 py-2.5 text-sm rounded-sm border focus:outline-none focus:ring-1 focus:ring-[#B89A62] transition-colors ${
                           isDay
                             ? 'bg-[#FAF8F5] border-stone-300 text-[#101B2D]'
-                            : 'bg-[#17263D] border-white/10 text-white placeholder:text-stone-500'
+                            : 'bg-[#1D191B] border-white/10 text-white placeholder:text-stone-500'
                         } ${formErrors.email ? 'border-red-500' : ''}`}
                       />
                     </div>
@@ -443,7 +443,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                         className={`w-full pl-9 pr-3 py-2.5 text-sm rounded-sm border focus:outline-none focus:ring-1 focus:ring-[#B89A62] transition-colors ${
                           isDay
                             ? 'bg-[#FAF8F5] border-stone-300 text-[#101B2D]'
-                            : 'bg-[#17263D] border-white/10 text-white placeholder:text-stone-500'
+                            : 'bg-[#1D191B] border-white/10 text-white placeholder:text-stone-500'
                         }`}
                       />
                     </div>
@@ -461,7 +461,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                       className={`w-full px-3 py-2.5 text-sm rounded-sm border focus:outline-none focus:ring-1 focus:ring-[#B89A62] transition-colors ${
                         isDay
                           ? 'bg-[#FAF8F5] border-stone-300 text-[#101B2D]'
-                          : 'bg-[#17263D] border-white/10 text-white'
+                          : 'bg-[#1D191B] border-white/10 text-white'
                       }`}
                     >
                       <option value="General Professional Correspondence">General Professional Correspondence</option>
@@ -489,7 +489,7 @@ Sent via Yetunde Aderonke Imana Professional Portfolio`;
                       className={`w-full p-3 text-sm rounded-sm border focus:outline-none focus:ring-1 focus:ring-[#B89A62] transition-colors resize-none ${
                         isDay
                           ? 'bg-[#FAF8F5] border-stone-300 text-[#101B2D]'
-                          : 'bg-[#17263D] border-white/10 text-white placeholder:text-stone-500'
+                          : 'bg-[#1D191B] border-white/10 text-white placeholder:text-stone-500'
                       } ${formErrors.message ? 'border-red-500' : ''}`}
                     />
                   </div>

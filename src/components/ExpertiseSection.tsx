@@ -57,7 +57,7 @@ export const ExpertiseSection: React.FC = () => {
         id="expertise"
         aria-label="Areas of Professional Expertise"
         className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-          isDay ? 'bg-[#F2ECE1] text-[#101B2D]' : 'bg-[#17263D] text-white'
+          isDay ? 'bg-[#F2ECE1] text-[#101B2D]' : 'bg-[#1D191B] text-white'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,7 +107,7 @@ export const ExpertiseSection: React.FC = () => {
                 className={`group relative p-8 rounded-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between cursor-pointer border ${
                   isDay
                     ? 'bg-white border-[#E0D8CB] hover:border-[#B89A62] shadow-sm'
-                    : 'bg-[#101B2D] border-white/10 hover:border-[#B89A62]/70 shadow-md'
+                    : 'bg-[#141113] border-white/10 hover:border-[#B89A62]/70 shadow-md'
                 } ${index === 4 ? 'md:col-span-2 lg:col-span-1' : ''}`}
               >
                 <div>
@@ -118,7 +118,7 @@ export const ExpertiseSection: React.FC = () => {
                     <div className={`w-12 h-12 rounded-sm border flex items-center justify-center transition-colors ${
                       isDay
                         ? 'bg-[#F9F6F0] border-[#B89A62]/40 group-hover:border-[#B89A62] group-hover:bg-[#EFE9DD]'
-                        : 'bg-[#17263D] border-[#B89A62]/30 group-hover:border-[#B89A62] group-hover:bg-[#1c2e47]'
+                        : 'bg-[#1D191B] border-[#B89A62]/30 group-hover:border-[#B89A62] group-hover:bg-[#1c2e47]'
                     }`}>
                       {renderIcon(item.iconName)}
                     </div>
@@ -155,7 +155,7 @@ export const ExpertiseSection: React.FC = () => {
                           className={`text-[11px] font-medium px-2.5 py-1 rounded-sm border ${
                             isDay
                               ? 'bg-[#FAF8F5] text-[#2C384A] border-stone-200'
-                              : 'bg-[#17263D] text-stone-300 border-white/5'
+                              : 'bg-[#1D191B] text-stone-300 border-white/5'
                           }`}
                         >
                           {tag}

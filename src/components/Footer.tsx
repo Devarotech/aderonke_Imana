@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
               <div className={`w-8 h-8 rounded border flex items-center justify-center ${
                 isDay
                   ? 'bg-[#E2DACB] border-[#B89A62] text-[#96773E]'
-                  : 'bg-[#17263D] border-[#B89A62]/30 text-[#B89A62]'
+                  : 'bg-[#1D191B] border-[#B89A62]/30 text-[#B89A62]'
               }`}>
                 <Scale className="w-4 h-4" />
               </div>

@@ -37,7 +37,7 @@ export const ExperienceSection: React.FC = () => {
       id="experience"
       aria-label="Professional Experience and Current Appointment"
       className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#101B2D] text-white'
+        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#141113] text-white'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,7 +75,7 @@ export const ExperienceSection: React.FC = () => {
           className={`border rounded-sm shadow-xl overflow-hidden mb-16 ${
             isDay
               ? 'bg-white border-[#E0D8CB]'
-              : 'bg-[#17263D] border-[#B89A62]/30'
+              : 'bg-[#1D191B] border-[#B89A62]/30'
           }`}
         >
           <div className="grid grid-cols-1 lg:grid-cols-12">
@@ -83,11 +83,11 @@ export const ExperienceSection: React.FC = () => {
             {/* Left Header Panel */}
             <div className={`lg:col-span-5 p-8 md:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r ${
               isDay
-                ? 'bg-[#101B2D] text-white border-stone-200'
-                : 'bg-[#101B2D] text-white border-[#B89A62]/30'
+                ? 'bg-[#141113] text-white border-stone-200'
+                : 'bg-[#141113] text-white border-[#B89A62]/30'
             }`}>
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#17263D] border border-[#B89A62]/40 text-[#D8BD8A] text-xs font-semibold uppercase tracking-wider mb-4">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#1D191B] border border-[#B89A62]/40 text-[#D8BD8A] text-xs font-semibold uppercase tracking-wider mb-4">
                   <Shield className="w-3.5 h-3.5 text-[#B89A62]" />
                   <span>Public Prosecutorial Service</span>
                 </div>
@@ -125,7 +125,7 @@ export const ExperienceSection: React.FC = () => {
 
             {/* Right Context Panel */}
             <div className={`lg:col-span-7 p-8 md:p-10 flex flex-col justify-center ${
-              isDay ? 'bg-white text-[#101B2D]' : 'bg-[#17263D] text-stone-200'
+              isDay ? 'bg-white text-[#101B2D]' : 'bg-[#1D191B] text-stone-200'
             }`}>
               <span className={`text-xs font-semibold uppercase tracking-widest mb-3 block ${
                 isDay ? 'text-[#96773E]' : 'text-[#D8BD8A]'
@@ -174,13 +174,13 @@ export const ExperienceSection: React.FC = () => {
                 className={`p-6 sm:p-7 border rounded-sm transition-all flex items-start gap-4 shadow-sm hover:shadow-md ${
                   isDay
                     ? 'bg-white border-[#E0D8CB] hover:border-[#B89A62]'
-                    : 'bg-[#17263D] border-white/10 hover:border-[#B89A62]'
+                    : 'bg-[#1D191B] border-white/10 hover:border-[#B89A62]'
                 }`}
               >
                 <div className={`w-8 h-8 rounded border flex items-center justify-center shrink-0 ${
                   isDay
                     ? 'bg-[#F2ECE1] border-[#B89A62]/40 text-[#96773E]'
-                    : 'bg-[#101B2D] border-[#B89A62]/30 text-[#B89A62]'
+                    : 'bg-[#141113] border-[#B89A62]/30 text-[#B89A62]'
                 }`}>
                   <CheckCircle2 className="w-4 h-4 text-[#B89A62]" />
                 </div>
@@ -194,7 +194,7 @@ export const ExperienceSection: React.FC = () => {
                     <span className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded border ${
                       isDay
                         ? 'bg-[#FAF8F5] text-[#96773E] border-[#E0D8CB]'
-                        : 'bg-[#101B2D] text-[#D8BD8A] border-[#B89A62]/30'
+                        : 'bg-[#141113] text-[#D8BD8A] border-[#B89A62]/30'
                     }`}>
                       {resp.category}
                     </span>

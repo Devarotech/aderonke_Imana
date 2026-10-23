@@ -115,13 +115,13 @@ export const ExpertiseModal: React.FC<ExpertiseModalProps> = ({ item, onClose })
         className={`relative w-full max-w-3xl rounded-sm shadow-2xl border transition-colors my-8 ${
           isDay
             ? 'bg-[#FAF8F5] text-[#101B2D] border-[#B89A62]/40'
-            : 'bg-[#101B2D] text-stone-100 border-[#B89A62]/40'
+            : 'bg-[#141113] text-stone-100 border-[#B89A62]/40'
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-stone-200/20 bg-black/10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded bg-[#17263D] border border-[#B89A62]/40 flex items-center justify-center text-[#B89A62]">
+            <div className="w-8 h-8 rounded bg-[#1D191B] border border-[#B89A62]/40 flex items-center justify-center text-[#B89A62]">
               <Scale className="w-4 h-4" />
             </div>
             <div>

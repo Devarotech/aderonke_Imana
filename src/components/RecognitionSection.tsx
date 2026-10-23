@@ -49,7 +49,7 @@ export const RecognitionSection: React.FC = () => {
       id="contributions"
       aria-label="Professional Contributions and Institutional Recognition"
       className={`py-20 md:py-28 relative overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#101B2D] text-white'
+        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#141113] text-white'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ export const RecognitionSection: React.FC = () => {
               className={`p-8 rounded-sm relative flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border ${
                 isDay
                   ? 'bg-white border-[#E0D8CB] hover:border-[#B89A62] shadow-sm'
-                  : 'bg-[#17263D] border-[#B89A62]/30 hover:border-[#B89A62] shadow-md'
+                  : 'bg-[#1D191B] border-[#B89A62]/30 hover:border-[#B89A62] shadow-md'
               }`}
             >
               <div>
@@ -106,14 +106,14 @@ export const RecognitionSection: React.FC = () => {
                   <div className={`w-12 h-12 rounded-sm border flex items-center justify-center ${
                     isDay
                       ? 'bg-[#F9F6F0] border-[#B89A62]/30'
-                      : 'bg-[#101B2D] border-white/10'
+                      : 'bg-[#141113] border-white/10'
                   }`}>
                     {renderHighlightIcon(highlight.id)}
                   </div>
                   <span className={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded border ${
                     isDay
                       ? 'bg-[#F2ECE1] text-[#96773E] border-[#B89A62]/30'
-                      : 'bg-[#101B2D] text-[#D8BD8A] border-[#B89A62]/30'
+                      : 'bg-[#141113] text-[#D8BD8A] border-[#B89A62]/30'
                   }`}>
                     {highlight.badge}
                   </span>
@@ -155,7 +155,7 @@ export const RecognitionSection: React.FC = () => {
           className={`p-4 sm:p-5 rounded-sm border flex items-start sm:items-center gap-3 ${
             isDay
               ? 'bg-[#F2ECE1] border-stone-200 text-[#556377]'
-              : 'bg-[#17263D]/60 border-white/5 text-stone-300'
+              : 'bg-[#1D191B]/60 border-white/5 text-stone-300'
           }`}
         >
           <Lock className="w-4 h-4 text-[#B89A62] shrink-0 mt-0.5 sm:mt-0" />

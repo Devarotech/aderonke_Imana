@@ -15,62 +15,26 @@ const STORAGE_KEYS = [
 export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) => {
   // Starts on portrait view mode by default
   const [viewMode, setViewMode] = useState<'portrait' | 'seal'>('portrait');
-  const [photoSrc, setPhotoSrc] = useState<string | null>(null);
-  const [isPermanentSaved, setIsPermanentSaved] = useState<boolean>(false);
+  // Default to static committed asset so all laptops, mobile devices, and Vercel load it immediately
+  const [photoSrc, setPhotoSrc] = useState<string>('/portrait.png');
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme } = useTheme();
   const isDay = theme === 'day';
 
-  // Check for saved photo in localStorage or static /portrait.png
+  // Check localStorage for custom override if available
   useEffect(() => {
-    // 1. Check if public /portrait.png exists and is a valid real image
-    const checkServerPortrait = () => {
-      const img = new Image();
-      img.src = `/portrait.png?t=${Date.now()}`;
-      img.onload = () => {
-        // Only accept if natural width is realistic for a portrait photo (> 100px)
-        if (img.naturalWidth > 100) {
-          setPhotoSrc('/portrait.png');
-          setIsPermanentSaved(true);
-        } else {
-          checkLocalStorage();
+    try {
+      for (const key of STORAGE_KEYS) {
+        const saved = localStorage.getItem(key);
+        if (saved && saved.startsWith('data:image/')) {
+          setPhotoSrc(saved);
+          return;
         }
-      };
-      img.onerror = () => {
-        checkLocalStorage();
-      };
-    };
-
-    // 2. Check localStorage from previous user session
-    const checkLocalStorage = () => {
-      try {
-        for (const key of STORAGE_KEYS) {
-          const saved = localStorage.getItem(key);
-          if (saved && saved.startsWith('data:image/')) {
-            setPhotoSrc(saved);
-            // Automatically sync to server so it becomes permanently saved to public/portrait.png!
-            fetch('/api/save-portrait', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: saved }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (data.success) {
-                  setIsPermanentSaved(true);
-                }
-              })
-              .catch(() => {});
-            return;
-          }
-        }
-      } catch {
-        // safe fallback
       }
-    };
-
-    checkServerPortrait();
+    } catch {
+      // safe fallback
+    }
   }, []);
 
   const handleFile = (file: File) => {
@@ -93,14 +57,7 @@ export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) 
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image: result }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              setIsPermanentSaved(true);
-            }
-          })
-          .catch(() => {});
+        }).catch(() => {});
       }
     };
     reader.readAsDataURL(file);
@@ -348,7 +305,7 @@ export const LegalPortrait: React.FC<LegalPortraitProps> = ({ className = '' }) 
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-semibold tracking-wide transition-all shadow-md cursor-pointer ${
             isDay
               ? 'bg-white hover:bg-[#F4EFE6] text-[#101B2D] border-[#C9A86A]/50 hover:border-[#B89A62]'
-              : 'bg-[#152033] hover:bg-[#1E2E4A] text-[#D8BD8A] border-[#B89A62]/40 hover:border-[#B89A62]'
+              : 'bg-[#221D20] hover:bg-[#2A2427] text-[#D8BD8A] border-[#B89A62]/40 hover:border-[#B89A62]'
           }`}
         >
           {viewMode === 'portrait' ? (

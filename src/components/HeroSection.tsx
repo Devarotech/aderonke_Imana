@@ -39,7 +39,7 @@ export const HeroSection: React.FC = () => {
       id="hero"
       aria-label="Introduction and Overview"
       className={`relative min-h-screen pt-20 pb-12 md:pt-24 md:pb-16 flex items-center transition-colors duration-300 overflow-hidden ${
-        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#101B2D] text-white'
+        isDay ? 'bg-[#FAF8F5] text-[#101B2D]' : 'bg-[#141113] text-white'
       }`}
     >
       {/* Background Architectural Atmosphere: Pure Ambient Lighting (No Grid Lines) */}
@@ -52,9 +52,9 @@ export const HeroSection: React.FC = () => {
           </>
         ) : (
           <>
-            <div className="absolute -top-32 -left-40 w-[36rem] h-[36rem] rounded-full bg-[#17263D]/80 blur-3xl" />
+            <div className="absolute -top-32 -left-40 w-[36rem] h-[36rem] rounded-full bg-[#1D191B]/80 blur-3xl" />
             <div className="absolute top-1/4 right-0 w-[40rem] h-[40rem] rounded-full bg-[#B89A62]/08 blur-3xl" />
-            <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-[#0D1524] blur-2xl" />
+            <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-[#0D0A0C] blur-2xl" />
           </>
         )}
       </div>
@@ -199,7 +199,7 @@ export const HeroSection: React.FC = () => {
             >
               <div className="flex items-center gap-2.5">
                 <div className={`w-7 h-7 rounded border flex items-center justify-center text-[#B89A62] ${
-                  isDay ? 'bg-white border-stone-200' : 'bg-[#17263D] border-white/10'
+                  isDay ? 'bg-white border-stone-200' : 'bg-[#1D191B] border-white/10'
                 }`}>
                   <Scale className="w-3.5 h-3.5" />
                 </div>
@@ -215,7 +215,7 @@ export const HeroSection: React.FC = () => {
 
               <div className="flex items-center gap-2.5">
                 <div className={`w-7 h-7 rounded border flex items-center justify-center text-[#B89A62] ${
-                  isDay ? 'bg-white border-stone-200' : 'bg-[#17263D] border-white/10'
+                  isDay ? 'bg-white border-stone-200' : 'bg-[#1D191B] border-white/10'
                 }`}>
                   <ShieldCheck className="w-3.5 h-3.5" />
                 </div>
@@ -231,7 +231,7 @@ export const HeroSection: React.FC = () => {
 
               <div className="col-span-2 sm:col-span-1 flex items-center gap-2.5">
                 <div className={`w-7 h-7 rounded border flex items-center justify-center text-[#B89A62] ${
-                  isDay ? 'bg-white border-stone-200' : 'bg-[#17263D] border-white/10'
+                  isDay ? 'bg-white border-stone-200' : 'bg-[#1D191B] border-white/10'
                 }`}>
                   <Award className="w-3.5 h-3.5" />
                 </div>

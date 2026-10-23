@@ -16,6 +16,7 @@ import { RecognitionSection } from './components/RecognitionSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
+import { FadeInSection } from './components/FadeInSection';
 
 function AppContent() {
   const { theme } = useTheme();
@@ -26,7 +27,7 @@ function AppContent() {
       className={`min-h-screen flex flex-col transition-colors duration-300 selection:bg-[#B89A62]/30 ${
         isDay
           ? 'bg-[#FAF8F5] text-[#101B2D] selection:text-[#101B2D]'
-          : 'bg-[#101B2D] text-stone-100 selection:text-white'
+          : 'bg-[#141113] text-stone-100 selection:text-white'
       }`}
     >
       <SkipToContent />
@@ -34,12 +35,24 @@ function AppContent() {
       
       <main id="main-content" className="flex-grow">
         <HeroSection />
-        <AboutSection />
-        <LegalFocusSection />
-        <ExpertiseSection />
-        <ExperienceSection />
-        <RecognitionSection />
-        <ContactSection />
+        <FadeInSection>
+          <AboutSection />
+        </FadeInSection>
+        <FadeInSection>
+          <LegalFocusSection />
+        </FadeInSection>
+        <FadeInSection>
+          <ExpertiseSection />
+        </FadeInSection>
+        <FadeInSection>
+          <ExperienceSection />
+        </FadeInSection>
+        <FadeInSection>
+          <RecognitionSection />
+        </FadeInSection>
+        <FadeInSection>
+          <ContactSection />
+        </FadeInSection>
       </main>
 
       <Footer />

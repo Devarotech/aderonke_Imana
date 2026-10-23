@@ -60,10 +60,10 @@ export const Navbar: React.FC = () => {
           isScrolled
             ? isDay
               ? 'bg-[#FCFAF6]/95 backdrop-blur-md shadow-md border-b border-[#B89A62]/30 py-3'
-              : 'bg-[#101B2D]/95 backdrop-blur-md shadow-lg border-b border-[#B89A62]/20 py-3'
+              : 'bg-[#141113]/95 backdrop-blur-md shadow-lg border-b border-[#B89A62]/20 py-3'
             : isDay
               ? 'bg-[#FAF8F5]/85 backdrop-blur-sm border-b border-[#101B2D]/10 py-4 sm:py-5'
-              : 'bg-[#101B2D]/80 backdrop-blur-sm border-b border-white/5 py-4 sm:py-5'
+              : 'bg-[#141113]/80 backdrop-blur-sm border-b border-white/5 py-4 sm:py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,7 +78,7 @@ export const Navbar: React.FC = () => {
                 className={`w-9 h-9 rounded flex items-center justify-center transition-colors ${
                   isDay
                     ? 'bg-[#F2ECE1] border border-[#B89A62] text-[#91723E]'
-                    : 'bg-[#17263D] border border-[#B89A62]/40 text-[#B89A62]'
+                    : 'bg-[#1D191B] border border-[#B89A62]/40 text-[#B89A62]'
                 }`}
               >
                 <Scale className="w-4 h-4 transition-transform group-hover:scale-110" />
@@ -148,7 +148,7 @@ export const Navbar: React.FC = () => {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                     isDay
                       ? 'bg-white border-stone-300 text-[#101B2D] hover:border-[#B89A62] hover:bg-stone-50'
-                      : 'bg-[#17263D] border-white/10 text-stone-200 hover:border-[#B89A62] hover:text-[#D8BD8A]'
+                      : 'bg-[#1D191B] border-white/10 text-stone-200 hover:border-[#B89A62] hover:text-[#D8BD8A]'
                   }`}
                 >
                   <Share2 className="w-3.5 h-3.5 text-[#B89A62]" />
@@ -160,7 +160,7 @@ export const Navbar: React.FC = () => {
                   <div className={`absolute right-0 mt-2 w-64 rounded-sm shadow-xl border p-2 z-50 ${
                     isDay
                       ? 'bg-white border-[#E0D8CB] text-[#101B2D]'
-                      : 'bg-[#101B2D] border-[#B89A62]/40 text-white'
+                      : 'bg-[#141113] border-[#B89A62]/40 text-white'
                   }`}>
                     <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-1 block ${
                       isDay ? 'text-[#96773E]' : 'text-[#D8BD8A]'
@@ -178,7 +178,7 @@ export const Navbar: React.FC = () => {
                           className={`flex items-center justify-between px-3 py-2 rounded text-xs transition-colors ${
                             isDay
                               ? 'hover:bg-[#FAF8F5] text-[#101B2D] hover:text-[#96773E]'
-                              : 'hover:bg-[#17263D] text-stone-200 hover:text-[#D8BD8A]'
+                              : 'hover:bg-[#1D191B] text-stone-200 hover:text-[#D8BD8A]'
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -207,7 +207,7 @@ export const Navbar: React.FC = () => {
                 className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer border ${
                   isDay
                     ? 'bg-[#EFE9DD] hover:bg-[#E5DDCB] text-[#101B2D] border-[#B89A62]/50 shadow-sm'
-                    : 'bg-[#17263D] hover:bg-[#1E304C] text-[#D8BD8A] border-[#B89A62]/40 shadow-sm'
+                    : 'bg-[#1D191B] hover:bg-[#2A2427] text-[#D8BD8A] border-[#B89A62]/40 shadow-sm'
                 }`}
               >
                 {isDay ? (
@@ -236,7 +236,7 @@ export const Navbar: React.FC = () => {
                 className={`p-2 rounded-full border transition-colors ${
                   isDay
                     ? 'bg-[#EFE9DD] text-[#101B2D] border-[#B89A62]/40'
-                    : 'bg-[#17263D] text-[#D8BD8A] border-[#B89A62]/30'
+                    : 'bg-[#1D191B] text-[#D8BD8A] border-[#B89A62]/30'
                 }`}
               >
                 {isDay ? <Sun className="w-4 h-4 text-amber-600" /> : <Moon className="w-4 h-4" />}
@@ -267,7 +267,7 @@ export const Navbar: React.FC = () => {
             className={`lg:hidden fixed inset-x-0 top-full shadow-2xl transition-all border-b ${
               isDay
                 ? 'bg-[#FCFAF6] border-[#B89A62]/30 text-[#101B2D]'
-                : 'bg-[#101B2D] border-[#B89A62]/30 text-white'
+                : 'bg-[#141113] border-[#B89A62]/30 text-white'
             }`}
           >
             <div className="px-4 pt-3 pb-6 space-y-1">
@@ -313,7 +313,7 @@ export const Navbar: React.FC = () => {
                       className={`flex flex-col items-center justify-center p-2 rounded text-xs border ${
                         isDay
                           ? 'bg-white border-stone-200 text-[#101B2D]'
-                          : 'bg-[#17263D] border-white/10 text-stone-200'
+                          : 'bg-[#1D191B] border-white/10 text-stone-200'
                       }`}
                     >
                       <SocialIcon name={social.icon} className="w-4 h-4 mb-1 text-[#B89A62]" />
